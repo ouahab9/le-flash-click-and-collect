@@ -1,21 +1,40 @@
-Schema::create('pickup_slots', function (Blueprint $table) {
-    $table->id();
+<?php
 
-    $table->date('date');
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-    $table->time('start_time');
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('pickup_slots', function (Blueprint $table) {
+            $table->id();
 
-    $table->time('end_time');
+            $table->date('date');
 
-    $table->unsignedInteger('max_orders')->default(10);
+            $table->time('start_time');
 
-    $table->boolean('active')->default(true);
+            $table->time('end_time');
 
-    $table->timestamps();
+            $table->unsignedInteger('max_orders')
+                ->default(10);
 
-    $table->unique([
-        'date',
-        'start_time',
-        'end_time',
-    ]);
-});
+            $table->boolean('active')
+                ->default(true);
+
+            $table->timestamps();
+
+            $table->unique([
+                'date',
+                'start_time',
+                'end_time',
+            ]);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('pickup_slots');
+    }
+};
