@@ -12,7 +12,9 @@ test('login screen can be rendered', function () {
 });
 
 test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'is_admin' => true,
+    ]);
 
     $component = Volt::test('pages.auth.login')
         ->set('form.email', $user->email)
@@ -43,30 +45,38 @@ test('users can not authenticate with invalid password', function () {
     $this->assertGuest();
 });
 
-test('navigation menu can be rendered', function () {
-    $user = User::factory()->create();
+test('non admin users cannot access dashboard', function () {
+    $user = User::factory()->create([
+        'is_admin' => false,
+    ]);
 
     $this->actingAs($user);
 
-    $response = $this->get('/dashboard');
+    $this->get('/dashboard')
+        ->assertForbidden();
+});
 
-    $response
-        ->assertOk()
-        ->assertSeeVolt('layout.navigation');
+test('admin users can access dashboard', function () {
+    $user = User::factory()->create([
+        'is_admin' => true,
+    ]);
+
+    $this->actingAs($user);
+
+    $this->get('/dashboard')
+        ->assertOk();
 });
 
 test('users can logout', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'is_admin' => true,
+    ]);
 
     $this->actingAs($user);
 
-    $component = Volt::test('layout.navigation');
+    $response = $this->post('/logout');
 
-    $component->call('logout');
-
-    $component
-        ->assertHasNoErrors()
-        ->assertRedirect('/');
+    $response->assertRedirect('/');
 
     $this->assertGuest();
 });
