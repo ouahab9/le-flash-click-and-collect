@@ -20,7 +20,6 @@ class OrderTrackingController extends Controller
         return view('tracking.index');
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | RECHERCHER UNE COMMANDE
@@ -45,7 +44,6 @@ class OrderTrackingController extends Controller
             ],
         ]);
 
-
         /*
         |--------------------------------------------------------------------------
         | NUMÉRO DE COMMANDE
@@ -60,7 +58,6 @@ class OrderTrackingController extends Controller
             )
         );
 
-
         /*
         |--------------------------------------------------------------------------
         | TÉLÉPHONE NORMALISÉ
@@ -74,14 +71,13 @@ class OrderTrackingController extends Controller
                 ]
             );
 
-
         /*
         |--------------------------------------------------------------------------
         | TÉLÉPHONE INCORRECT
         |--------------------------------------------------------------------------
         */
 
-        if (!$customerPhone) {
+        if (! $customerPhone) {
 
             return view(
                 'tracking.index',
@@ -91,11 +87,9 @@ class OrderTrackingController extends Controller
                 ]
             )
                 ->withErrors([
-                    'customer_phone' =>
-                        'Numéro de téléphone invalide.',
+                    'customer_phone' => 'Numéro de téléphone invalide.',
                 ]);
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -117,7 +111,6 @@ class OrderTrackingController extends Controller
             )
             ->first();
 
-
         return view(
             'tracking.index',
             [
@@ -126,7 +119,6 @@ class OrderTrackingController extends Controller
             ]
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -152,7 +144,6 @@ class OrderTrackingController extends Controller
             ],
         ]);
 
-
         $orderNumber = strtoupper(
             trim(
                 $validated[
@@ -161,7 +152,6 @@ class OrderTrackingController extends Controller
             )
         );
 
-
         $customerPhone =
             $this->normalizePhone(
                 $validated[
@@ -169,14 +159,12 @@ class OrderTrackingController extends Controller
                 ]
             );
 
-
-        if (!$customerPhone) {
+        if (! $customerPhone) {
 
             return response()->json([
                 'found' => false,
             ], 422);
         }
-
 
         $order = Order::where(
             'order_number',
@@ -188,14 +176,12 @@ class OrderTrackingController extends Controller
             )
             ->first();
 
-
-        if (!$order) {
+        if (! $order) {
 
             return response()->json([
                 'found' => false,
             ], 404);
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -207,28 +193,20 @@ class OrderTrackingController extends Controller
             $order->status
         ) {
 
-            'pending' =>
-                'En attente',
+            'pending' => 'En attente',
 
-            'accepted' =>
-                'Acceptée',
+            'accepted' => 'Acceptée',
 
-            'preparing' =>
-                'En préparation',
+            'preparing' => 'En préparation',
 
-            'ready' =>
-                'Prête à retirer',
+            'ready' => 'Prête à retirer',
 
-            'picked_up' =>
-                'Retirée',
+            'picked_up' => 'Retirée',
 
-            'cancelled' =>
-                'Annulée',
+            'cancelled' => 'Annulée',
 
-            default =>
-                $order->status,
+            default => $order->status,
         };
-
 
         /*
         |--------------------------------------------------------------------------
@@ -240,44 +218,31 @@ class OrderTrackingController extends Controller
             $order->status
         ) {
 
-            'pending' =>
-                'Votre commande a bien été reçue. Elle attend maintenant la validation du magasin.',
+            'pending' => 'Votre commande a bien été reçue. Elle attend maintenant la validation du magasin.',
 
-            'accepted' =>
-                'Votre commande a été acceptée par Le Flash. Elle sera bientôt préparée.',
+            'accepted' => 'Votre commande a été acceptée par Le Flash. Elle sera bientôt préparée.',
 
-            'preparing' =>
-                'Votre commande est actuellement en préparation. Nous rassemblons vos produits.',
+            'preparing' => 'Votre commande est actuellement en préparation. Nous rassemblons vos produits.',
 
-            'ready' =>
-                'Votre commande est prête. Vous pouvez venir la récupérer pendant votre créneau.',
+            'ready' => 'Votre commande est prête. Vous pouvez venir la récupérer pendant votre créneau.',
 
-            'picked_up' =>
-                'Cette commande a été retirée. Merci pour votre commande.',
+            'picked_up' => 'Cette commande a été retirée. Merci pour votre commande.',
 
-            'cancelled' =>
-                'Cette commande a été annulée.',
+            'cancelled' => 'Cette commande a été annulée.',
 
-            default =>
-                '',
+            default => '',
         };
 
-
         return response()->json([
-            'found' =>
-                true,
+            'found' => true,
 
-            'status' =>
-                $order->status,
+            'status' => $order->status,
 
-            'status_label' =>
-                $statusLabel,
+            'status_label' => $statusLabel,
 
-            'status_description' =>
-                $statusDescription,
+            'status_description' => $statusDescription,
         ]);
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -295,11 +260,9 @@ class OrderTrackingController extends Controller
             trim($phone)
         );
 
-
-        if (!$phone) {
+        if (! $phone) {
             return null;
         }
-
 
         if (
             str_starts_with(
@@ -309,15 +272,12 @@ class OrderTrackingController extends Controller
         ) {
 
             $phone =
-                '0' .
+                '0'.
                 substr(
                     $phone,
                     4
                 );
-        }
-
-
-        elseif (
+        } elseif (
             str_starts_with(
                 $phone,
                 '+33'
@@ -325,23 +285,21 @@ class OrderTrackingController extends Controller
         ) {
 
             $phone =
-                '0' .
+                '0'.
                 substr(
                     $phone,
                     3
                 );
         }
 
-
         if (
-            !preg_match(
+            ! preg_match(
                 '/^0[1-9][0-9]{8}$/',
                 $phone
             )
         ) {
             return null;
         }
-
 
         return $phone;
     }

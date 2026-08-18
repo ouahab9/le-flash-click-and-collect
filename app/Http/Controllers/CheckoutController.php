@@ -36,7 +36,6 @@ class CheckoutController extends Controller
                 );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | PRODUITS DU PANIER
@@ -52,7 +51,6 @@ class CheckoutController extends Controller
             ->unique()
             ->values();
 
-
         /*
         |--------------------------------------------------------------------------
         | PRODUITS 18+
@@ -65,7 +63,6 @@ class CheckoutController extends Controller
         )
             ->where('age_restricted', true)
             ->exists();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -97,7 +94,6 @@ class CheckoutController extends Controller
             })
             ->values();
 
-
         /*
         |--------------------------------------------------------------------------
         | TOTAL AFFICHÉ
@@ -112,7 +108,7 @@ class CheckoutController extends Controller
                 (int) $item['product_id']
             );
 
-            if (!$product) {
+            if (! $product) {
                 continue;
             }
 
@@ -121,16 +117,13 @@ class CheckoutController extends Controller
                 * (int) $item['quantity'];
         }
 
-
         return view('checkout.index', [
             'cart' => $cart,
             'slots' => $slots,
             'total' => $total,
-            'hasAgeRestrictedProducts' =>
-                $hasAgeRestrictedProducts,
+            'hasAgeRestrictedProducts' => $hasAgeRestrictedProducts,
         ]);
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -153,7 +146,6 @@ class CheckoutController extends Controller
                 );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | PRODUITS DU PANIER
@@ -168,7 +160,6 @@ class CheckoutController extends Controller
             )
             ->unique()
             ->values();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -186,7 +177,6 @@ class CheckoutController extends Controller
                     true
                 )
                 ->exists();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -214,7 +204,6 @@ class CheckoutController extends Controller
             ],
         ];
 
-
         if ($hasAgeRestrictedProduct) {
             $rules['age_confirmed'] = [
                 'required',
@@ -222,27 +211,20 @@ class CheckoutController extends Controller
             ];
         }
 
-
         $validated = $request->validate(
             $rules,
             [
-                'customer_name.required' =>
-                    'Veuillez renseigner votre nom.',
+                'customer_name.required' => 'Veuillez renseigner votre nom.',
 
-                'customer_phone.required' =>
-                    'Veuillez renseigner votre numéro de téléphone.',
+                'customer_phone.required' => 'Veuillez renseigner votre numéro de téléphone.',
 
-                'pickup_slot_id.required' =>
-                    'Veuillez sélectionner un créneau de retrait.',
+                'pickup_slot_id.required' => 'Veuillez sélectionner un créneau de retrait.',
 
-                'age_confirmed.required' =>
-                    'Vous devez confirmer avoir au moins 18 ans.',
+                'age_confirmed.required' => 'Vous devez confirmer avoir au moins 18 ans.',
 
-                'age_confirmed.accepted' =>
-                    'Vous devez confirmer avoir au moins 18 ans.',
+                'age_confirmed.accepted' => 'Vous devez confirmer avoir au moins 18 ans.',
             ]
         );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -254,17 +236,14 @@ class CheckoutController extends Controller
             $validated['customer_phone']
         );
 
-
-        if (!$normalizedPhone) {
+        if (! $normalizedPhone) {
 
             return back()
                 ->withErrors([
-                    'customer_phone' =>
-                        'Veuillez saisir un numéro de téléphone français valide.',
+                    'customer_phone' => 'Veuillez saisir un numéro de téléphone français valide.',
                 ])
                 ->withInput();
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -294,20 +273,17 @@ class CheckoutController extends Controller
                         ->lockForUpdate()
                         ->first();
 
-
-                    if (!$slot) {
+                    if (! $slot) {
                         throw new \RuntimeException(
                             'Ce créneau n’existe plus.'
                         );
                     }
 
-
-                    if (!$slot->active) {
+                    if (! $slot->active) {
                         throw new \RuntimeException(
                             'Ce créneau n’est plus disponible.'
                         );
                     }
-
 
                     if (
                         $slot->date->lt(
@@ -318,7 +294,6 @@ class CheckoutController extends Controller
                             'Ce créneau est déjà passé.'
                         );
                     }
-
 
                     /*
                     |--------------------------------------------------------------------------
@@ -334,7 +309,6 @@ class CheckoutController extends Controller
                         )
                         ->count();
 
-
                     if (
                         $ordersCount
                         >= $slot->max_orders
@@ -344,7 +318,6 @@ class CheckoutController extends Controller
                         );
                     }
 
-
                     /*
                     |--------------------------------------------------------------------------
                     | PRODUITS VERROUILLÉS
@@ -352,7 +325,6 @@ class CheckoutController extends Controller
                     */
 
                     $lockedProducts = [];
-
 
                     foreach ($cart as $item) {
 
@@ -364,20 +336,17 @@ class CheckoutController extends Controller
                             );
                         }
 
-
                         $productId =
                             (int) $item['product_id'];
 
                         $quantity =
                             (int) $item['quantity'];
 
-
                         if ($quantity < 1) {
                             throw new \RuntimeException(
                                 'Une quantité du panier est invalide.'
                             );
                         }
-
 
                         $product = Product::where(
                             'id',
@@ -386,43 +355,38 @@ class CheckoutController extends Controller
                             ->lockForUpdate()
                             ->first();
 
-
-                        if (!$product) {
+                        if (! $product) {
                             throw new \RuntimeException(
                                 'Un produit de votre panier n’existe plus.'
                             );
                         }
 
-
-                        if (!$product->active) {
+                        if (! $product->active) {
                             throw new \RuntimeException(
-                                'Le produit "' .
-                                $product->name .
+                                'Le produit "'.
+                                $product->name.
                                 '" n’est plus disponible.'
                             );
                         }
-
 
                         if (
                             $product->stock
                             < $quantity
                         ) {
                             throw new \RuntimeException(
-                                'Stock insuffisant pour "' .
-                                $product->name .
-                                '". Disponible : ' .
-                                $product->stock .
+                                'Stock insuffisant pour "'.
+                                $product->name.
+                                '". Disponible : '.
+                                $product->stock.
                                 ' unité(s).'
                             );
                         }
-
 
                         $lockedProducts[] = [
                             'product' => $product,
                             'quantity' => $quantity,
                         ];
                     }
-
 
                     /*
                     |--------------------------------------------------------------------------
@@ -431,7 +395,6 @@ class CheckoutController extends Controller
                     */
 
                     $total = 0;
-
 
                     foreach (
                         $lockedProducts as $data
@@ -443,7 +406,6 @@ class CheckoutController extends Controller
                             * $data['quantity'];
                     }
 
-
                     /*
                     |--------------------------------------------------------------------------
                     | NUMÉRO UNIQUE
@@ -453,7 +415,7 @@ class CheckoutController extends Controller
                     do {
 
                         $orderNumber =
-                            'FLASH-' .
+                            'FLASH-'.
                             strtoupper(
                                 Str::random(8)
                             );
@@ -465,7 +427,6 @@ class CheckoutController extends Controller
                         )->exists()
                     );
 
-
                     /*
                     |--------------------------------------------------------------------------
                     | CRÉATION COMMANDE
@@ -473,18 +434,15 @@ class CheckoutController extends Controller
                     */
 
                     $order = Order::create([
-                        'pickup_slot_id' =>
-                            $slot->id,
+                        'pickup_slot_id' => $slot->id,
 
-                        'order_number' =>
-                            $orderNumber,
+                        'order_number' => $orderNumber,
 
-                        'customer_name' =>
-                            trim(
-                                $validated[
-                                    'customer_name'
-                                ]
-                            ),
+                        'customer_name' => trim(
+                            $validated[
+                                'customer_name'
+                            ]
+                        ),
 
                         /*
                         | Le téléphone est enregistré
@@ -493,22 +451,16 @@ class CheckoutController extends Controller
                         | 0612345678
                         */
 
-                        'customer_phone' =>
-                            $normalizedPhone,
+                        'customer_phone' => $normalizedPhone,
 
-                        'status' =>
-                            'pending',
+                        'status' => 'pending',
 
-                        'pickup_date' =>
-                            $slot->date,
+                        'pickup_date' => $slot->date,
 
-                        'pickup_time' =>
-                            $slot->start_time,
+                        'pickup_time' => $slot->start_time,
 
-                        'total' =>
-                            $total,
+                        'total' => $total,
                     ]);
-
 
                     /*
                     |--------------------------------------------------------------------------
@@ -529,27 +481,19 @@ class CheckoutController extends Controller
                         $unitPrice =
                             (float) $product->price;
 
-
                         OrderItem::create([
-                            'order_id' =>
-                                $order->id,
+                            'order_id' => $order->id,
 
-                            'product_id' =>
-                                $product->id,
+                            'product_id' => $product->id,
 
-                            'product_name' =>
-                                $product->name,
+                            'product_name' => $product->name,
 
-                            'quantity' =>
-                                $quantity,
+                            'quantity' => $quantity,
 
-                            'unit_price' =>
-                                $unitPrice,
+                            'unit_price' => $unitPrice,
 
-                            'total_price' =>
-                                $unitPrice * $quantity,
+                            'total_price' => $unitPrice * $quantity,
                         ]);
-
 
                         $product->stock -=
                             $quantity;
@@ -557,12 +501,10 @@ class CheckoutController extends Controller
                         $product->save();
                     }
 
-
                     return $order;
                 },
                 5
             );
-
 
         } catch (Throwable $exception) {
 
@@ -577,7 +519,6 @@ class CheckoutController extends Controller
                 );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | PANIER VIDÉ
@@ -585,7 +526,6 @@ class CheckoutController extends Controller
         */
 
         $request->session()->forget('cart');
-
 
         return redirect()
             ->route(
@@ -597,7 +537,6 @@ class CheckoutController extends Controller
                 'Votre commande a été enregistrée.'
             );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -614,7 +553,6 @@ class CheckoutController extends Controller
             'pickupSlot',
         ]);
 
-
         return view(
             'checkout.success',
             [
@@ -622,7 +560,6 @@ class CheckoutController extends Controller
             ]
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -659,11 +596,9 @@ class CheckoutController extends Controller
             trim($phone)
         );
 
-
-        if (!$phone) {
+        if (! $phone) {
             return null;
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -678,13 +613,12 @@ class CheckoutController extends Controller
             )
         ) {
             $phone =
-                '0' .
+                '0'.
                 substr(
                     $phone,
                     4
                 );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -699,13 +633,12 @@ class CheckoutController extends Controller
             )
         ) {
             $phone =
-                '0' .
+                '0'.
                 substr(
                     $phone,
                     3
                 );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -718,14 +651,13 @@ class CheckoutController extends Controller
         */
 
         if (
-            !preg_match(
+            ! preg_match(
                 '/^0[1-9][0-9]{8}$/',
                 $phone
             )
         ) {
             return null;
         }
-
 
         return $phone;
     }

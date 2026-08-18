@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,8 +18,7 @@ return Application::configure(
         function (Middleware $middleware): void {
 
             $middleware->alias([
-                'admin' =>
-                    \App\Http\Middleware\AdminMiddleware::class,
+                'admin' => AdminMiddleware::class,
             ]);
         }
     )
@@ -26,8 +26,7 @@ return Application::configure(
         function (Exceptions $exceptions): void {
 
             $exceptions->shouldRenderJsonWhen(
-                fn (Request $request) =>
-                    $request->is('api/*')
+                fn (Request $request) => $request->is('api/*')
                     || $request->expectsJson(),
             );
         }

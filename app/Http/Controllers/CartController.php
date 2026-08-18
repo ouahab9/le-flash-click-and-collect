@@ -30,7 +30,7 @@ class CartController extends Controller
         */
 
         $hasAgeRestrictedProducts = collect($cart)->contains(function ($item) {
-            return !empty($item['age_restricted']);
+            return ! empty($item['age_restricted']);
         });
 
         /*
@@ -43,7 +43,7 @@ class CartController extends Controller
         |
         */
 
-        if (!$hasAgeRestrictedProducts && !empty($cart)) {
+        if (! $hasAgeRestrictedProducts && ! empty($cart)) {
 
             $productIds = collect($cart)
                 ->pluck('product_id')
@@ -68,7 +68,6 @@ class CartController extends Controller
         ]);
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | AJOUTER UN PRODUIT
@@ -80,7 +79,7 @@ class CartController extends Controller
         Product $product
     ): RedirectResponse {
 
-        if (!$product->active || $product->stock <= 0) {
+        if (! $product->active || $product->stock <= 0) {
 
             return back()->with(
                 'error',
@@ -91,7 +90,6 @@ class CartController extends Controller
         $cart = $request->session()->get('cart', []);
 
         $productId = (string) $product->id;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -143,21 +141,17 @@ class CartController extends Controller
 
                 'image' => $product->image,
 
-                'age_restricted' =>
-                    (bool) $product->age_restricted,
+                'age_restricted' => (bool) $product->age_restricted,
             ];
         }
 
-
         $request->session()->put('cart', $cart);
-
 
         return back()->with(
             'success',
             'Produit ajouté au panier.'
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -178,13 +172,11 @@ class CartController extends Controller
             ],
         ]);
 
-
         $cart = $request->session()->get('cart', []);
 
         $productId = (string) $product->id;
 
-
-        if (!isset($cart[$productId])) {
+        if (! isset($cart[$productId])) {
 
             return redirect()
                 ->route('cart.index')
@@ -193,7 +185,6 @@ class CartController extends Controller
                     'Produit absent du panier.'
                 );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -218,16 +209,13 @@ class CartController extends Controller
                 );
         }
 
-
         $quantity = min(
             (int) $request->quantity,
             $product->stock
         );
 
-
         $cart[$productId]['quantity'] =
             $quantity;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -238,12 +226,10 @@ class CartController extends Controller
         $cart[$productId]['age_restricted'] =
             (bool) $product->age_restricted;
 
-
         $request->session()->put(
             'cart',
             $cart
         );
-
 
         return redirect()
             ->route('cart.index')
@@ -252,7 +238,6 @@ class CartController extends Controller
                 'Quantité mise à jour.'
             );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -270,18 +255,14 @@ class CartController extends Controller
             []
         );
 
-
         $productId = (string) $product->id;
 
-
         unset($cart[$productId]);
-
 
         $request->session()->put(
             'cart',
             $cart
         );
-
 
         return redirect()
             ->route('cart.index')
@@ -290,7 +271,6 @@ class CartController extends Controller
                 'Produit supprimé du panier.'
             );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -303,7 +283,6 @@ class CartController extends Controller
     ): RedirectResponse {
 
         $request->session()->forget('cart');
-
 
         return redirect()
             ->route('cart.index')

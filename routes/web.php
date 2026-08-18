@@ -5,14 +5,11 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PickupSlotController;
 use App\Http\Controllers\Admin\ProductController;
-
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderTrackingController;
-
 use Illuminate\Support\Facades\Route;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [CatalogController::class, 'index'])
     ->name('catalog.index');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +41,6 @@ Route::delete('/panier/supprimer/{product}', [CartController::class, 'remove'])
 Route::delete('/panier/vider', [CartController::class, 'clear'])
     ->name('cart.clear');
 
-
 /*
 |--------------------------------------------------------------------------
 | COMMANDE CLIENT
@@ -64,7 +59,6 @@ Route::get(
 )
     ->name('checkout.success');
 
-
 /*
 |--------------------------------------------------------------------------
 | SUIVI DE COMMANDE
@@ -77,13 +71,11 @@ Route::get(
 )
     ->name('tracking.index');
 
-
 Route::post(
     '/suivi',
     [OrderTrackingController::class, 'search']
 )
     ->name('tracking.search');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -101,7 +93,6 @@ Route::post(
 )
     ->name('tracking.status');
 
-
 /*
 |--------------------------------------------------------------------------
 | DASHBOARD ADMIN
@@ -118,7 +109,6 @@ Route::get(
     ])
     ->name('dashboard');
 
-
 /*
 |--------------------------------------------------------------------------
 | ADMINISTRATION
@@ -126,9 +116,9 @@ Route::get(
 */
 
 Route::middleware([
-        'auth',
-        'admin',
-    ])
+    'auth',
+    'admin',
+])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -145,20 +135,17 @@ Route::middleware([
         )
             ->name('orders.index');
 
-
         Route::get(
             '/commandes/{order}',
             [OrderController::class, 'show']
         )
             ->name('orders.show');
 
-
         Route::patch(
             '/commandes/{order}/statut',
             [OrderController::class, 'updateStatus']
         )
             ->name('orders.status');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -171,7 +158,6 @@ Route::middleware([
             [ProductController::class, 'updateStock']
         )
             ->name('products.stock');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -188,7 +174,6 @@ Route::middleware([
             ])
             ->names('products');
 
-
         /*
         |--------------------------------------------------------------------------
         | CATÉGORIES
@@ -203,7 +188,6 @@ Route::middleware([
                 'categories' => 'category',
             ])
             ->names('categories');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -220,7 +204,6 @@ Route::middleware([
             ])
             ->names('pickup-slots');
     });
-
 
 /*
 |--------------------------------------------------------------------------

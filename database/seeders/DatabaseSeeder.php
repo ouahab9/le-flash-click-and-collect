@@ -9,8 +9,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-    FlashSeeder::class,
-    PickupSlotSeeder::class,
-]);
+            FlashSeeder::class,
+            PickupSlotSeeder::class,
+        ]);
     }
 }

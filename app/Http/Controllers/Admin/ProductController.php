@@ -193,10 +193,10 @@ class ProductController extends Controller
 
         return back()->with(
             'success',
-            'Stock de "' .
-            $product->name .
-            '" mis à jour : ' .
-            $newStock .
+            'Stock de "'.
+            $product->name.
+            '" mis à jour : '.
+            $newStock.
             ' unité(s).'
         );
     }

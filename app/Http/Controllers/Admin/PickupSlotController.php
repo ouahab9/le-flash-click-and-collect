@@ -33,7 +33,6 @@ class PickupSlotController extends Controller
         ]);
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | CRÉATION
@@ -44,7 +43,6 @@ class PickupSlotController extends Controller
     {
         return view('admin.pickup-slots.create');
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -87,26 +85,19 @@ class PickupSlotController extends Controller
                 ],
             ],
             [
-                'date.required' =>
-                    'La date du créneau est obligatoire.',
+                'date.required' => 'La date du créneau est obligatoire.',
 
-                'start_time.required' =>
-                    'L’heure de début est obligatoire.',
+                'start_time.required' => 'L’heure de début est obligatoire.',
 
-                'end_time.required' =>
-                    'L’heure de fin est obligatoire.',
+                'end_time.required' => 'L’heure de fin est obligatoire.',
 
-                'end_time.after' =>
-                    'L’heure de fin doit être après l’heure de début.',
+                'end_time.after' => 'L’heure de fin doit être après l’heure de début.',
 
-                'max_orders.required' =>
-                    'Le nombre maximum de commandes est obligatoire.',
+                'max_orders.required' => 'Le nombre maximum de commandes est obligatoire.',
 
-                'max_orders.min' =>
-                    'Le créneau doit accepter au moins une commande.',
+                'max_orders.min' => 'Le créneau doit accepter au moins une commande.',
             ]
         );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -115,22 +106,19 @@ class PickupSlotController extends Controller
         */
 
         $slotStart = Carbon::parse(
-            $validated['date'] .
-            ' ' .
+            $validated['date'].
+            ' '.
             $validated['start_time']
         );
-
 
         if ($slotStart->isPast()) {
 
             return back()
                 ->withErrors([
-                    'date' =>
-                        'Impossible de créer un créneau déjà passé.',
+                    'date' => 'Impossible de créer un créneau déjà passé.',
                 ])
                 ->withInput();
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -152,26 +140,21 @@ class PickupSlotController extends Controller
             )
             ->exists();
 
-
         if ($alreadyExists) {
 
             return back()
                 ->withErrors([
-                    'start_time' =>
-                        'Un créneau identique existe déjà.',
+                    'start_time' => 'Un créneau identique existe déjà.',
                 ])
                 ->withInput();
         }
 
-
         $validated['active'] =
             $request->boolean('active');
-
 
         PickupSlot::create(
             $validated
         );
-
 
         return redirect()
             ->route('admin.pickup-slots.index')
@@ -180,7 +163,6 @@ class PickupSlotController extends Controller
                 'Créneau créé avec succès.'
             );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -196,16 +178,13 @@ class PickupSlotController extends Controller
             'orders',
         ]);
 
-
         return view(
             'admin.pickup-slots.show',
             [
-                'pickupSlot' =>
-                    $pickupSlot,
+                'pickupSlot' => $pickupSlot,
             ]
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -220,12 +199,10 @@ class PickupSlotController extends Controller
         return view(
             'admin.pickup-slots.edit',
             [
-                'pickupSlot' =>
-                    $pickupSlot,
+                'pickupSlot' => $pickupSlot,
             ]
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -269,14 +246,11 @@ class PickupSlotController extends Controller
                 ],
             ],
             [
-                'end_time.after' =>
-                    'L’heure de fin doit être après l’heure de début.',
+                'end_time.after' => 'L’heure de fin doit être après l’heure de début.',
 
-                'max_orders.min' =>
-                    'Le créneau doit accepter au moins une commande.',
+                'max_orders.min' => 'Le créneau doit accepter au moins une commande.',
             ]
         );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -293,7 +267,6 @@ class PickupSlotController extends Controller
                 )
                 ->count();
 
-
         /*
         |--------------------------------------------------------------------------
         | EMPÊCHER UNE CAPACITÉ INFÉRIEURE AUX COMMANDES EXISTANTES
@@ -307,14 +280,12 @@ class PickupSlotController extends Controller
 
             return back()
                 ->withErrors([
-                    'max_orders' =>
-                        'Ce créneau contient déjà ' .
-                        $activeOrdersCount .
+                    'max_orders' => 'Ce créneau contient déjà '.
+                        $activeOrdersCount.
                         ' commande(s). La capacité ne peut pas être inférieure.',
                 ])
                 ->withInput();
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -323,11 +294,10 @@ class PickupSlotController extends Controller
         */
 
         $newSlotStart = Carbon::parse(
-            $validated['date'] .
-            ' ' .
+            $validated['date'].
+            ' '.
             $validated['start_time']
         );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -339,11 +309,10 @@ class PickupSlotController extends Controller
         */
 
         $currentSlotStart = Carbon::parse(
-            $pickupSlot->date->format('Y-m-d') .
-            ' ' .
+            $pickupSlot->date->format('Y-m-d').
+            ' '.
             $pickupSlot->start_time
         );
-
 
         if (
             $currentSlotStart->isPast()
@@ -376,12 +345,10 @@ class PickupSlotController extends Controller
 
             return back()
                 ->withErrors([
-                    'date' =>
-                        'Un créneau déjà passé ne peut plus être déplacé.',
+                    'date' => 'Un créneau déjà passé ne peut plus être déplacé.',
                 ])
                 ->withInput();
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -390,19 +357,17 @@ class PickupSlotController extends Controller
         */
 
         if (
-            !$currentSlotStart->isPast()
+            ! $currentSlotStart->isPast()
             &&
             $newSlotStart->isPast()
         ) {
 
             return back()
                 ->withErrors([
-                    'date' =>
-                        'Impossible de déplacer ce créneau dans le passé.',
+                    'date' => 'Impossible de déplacer ce créneau dans le passé.',
                 ])
                 ->withInput();
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -429,26 +394,21 @@ class PickupSlotController extends Controller
             )
             ->exists();
 
-
         if ($alreadyExists) {
 
             return back()
                 ->withErrors([
-                    'start_time' =>
-                        'Un créneau identique existe déjà.',
+                    'start_time' => 'Un créneau identique existe déjà.',
                 ])
                 ->withInput();
         }
 
-
         $validated['active'] =
             $request->boolean('active');
-
 
         $pickupSlot->update(
             $validated
         );
-
 
         return redirect()
             ->route('admin.pickup-slots.index')
@@ -457,7 +417,6 @@ class PickupSlotController extends Controller
                 'Créneau modifié avec succès.'
             );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -487,9 +446,7 @@ class PickupSlotController extends Controller
                 );
         }
 
-
         $pickupSlot->delete();
-
 
         return redirect()
             ->route('admin.pickup-slots.index')

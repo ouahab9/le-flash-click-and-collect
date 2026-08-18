@@ -49,11 +49,10 @@ class OrderController extends Controller
 
         if (
             $status !== null &&
-            !in_array($status, $allowedStatuses, true)
+            ! in_array($status, $allowedStatuses, true)
         ) {
             $status = null;
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -65,7 +64,6 @@ class OrderController extends Controller
             'items',
             'pickupSlot',
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -88,21 +86,20 @@ class OrderController extends Controller
                     ->where(
                         'order_number',
                         'like',
-                        '%' . $search . '%'
+                        '%'.$search.'%'
                     )
                     ->orWhere(
                         'customer_name',
                         'like',
-                        '%' . $search . '%'
+                        '%'.$search.'%'
                     )
                     ->orWhere(
                         'customer_phone',
                         'like',
-                        '%' . $search . '%'
+                        '%'.$search.'%'
                     );
             });
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -118,7 +115,6 @@ class OrderController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | PAGINATION
@@ -129,7 +125,6 @@ class OrderController extends Controller
             ->latest()
             ->paginate(20)
             ->withQueryString();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -184,7 +179,6 @@ class OrderController extends Controller
             )->count(),
         ];
 
-
         /*
         |--------------------------------------------------------------------------
         | ENVOI À LA VUE
@@ -198,7 +192,6 @@ class OrderController extends Controller
             'counts' => $counts,
         ]);
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -217,7 +210,6 @@ class OrderController extends Controller
             'order' => $order,
         ]);
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -239,7 +231,6 @@ class OrderController extends Controller
 
         $newStatus = $validated['status'];
 
-
         try {
 
             DB::transaction(function () use (
@@ -260,9 +251,7 @@ class OrderController extends Controller
                     ->lockForUpdate()
                     ->firstOrFail();
 
-
                 $oldStatus = $lockedOrder->status;
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -273,7 +262,6 @@ class OrderController extends Controller
                 if ($oldStatus === $newStatus) {
                     return;
                 }
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -292,13 +280,11 @@ class OrderController extends Controller
 
                     $lockedOrder->load('items');
 
-
                     foreach ($lockedOrder->items as $item) {
 
-                        if (!$item->product_id) {
+                        if (! $item->product_id) {
                             continue;
                         }
-
 
                         $product = Product::where(
                             'id',
@@ -307,11 +293,9 @@ class OrderController extends Controller
                             ->lockForUpdate()
                             ->first();
 
-
-                        if (!$product) {
+                        if (! $product) {
                             continue;
                         }
-
 
                         $product->increment(
                             'stock',
@@ -319,7 +303,6 @@ class OrderController extends Controller
                         );
                     }
                 }
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -337,7 +320,6 @@ class OrderController extends Controller
                     );
                 }
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | MISE À JOUR DU STATUT
@@ -349,7 +331,6 @@ class OrderController extends Controller
                 ]);
             });
 
-
         } catch (\Throwable $exception) {
 
             return back()->with(
@@ -357,7 +338,6 @@ class OrderController extends Controller
                 $exception->getMessage()
             );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -372,7 +352,6 @@ class OrderController extends Controller
                 'Commande annulée. Les produits ont été remis en stock.'
             );
         }
-
 
         return back()->with(
             'success',

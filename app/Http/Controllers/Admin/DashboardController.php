@@ -13,7 +13,6 @@ class DashboardController extends Controller
     {
         $today = now()->toDateString();
 
-
         /*
         |--------------------------------------------------------------------------
         | COMMANDES DU JOUR
@@ -25,7 +24,6 @@ class DashboardController extends Controller
             $today
         )
             ->count();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -44,7 +42,6 @@ class DashboardController extends Controller
             )
             ->sum('total');
 
-
         /*
         |--------------------------------------------------------------------------
         | COMMANDES EN ATTENTE
@@ -56,7 +53,6 @@ class DashboardController extends Controller
             'pending'
         )
             ->count();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -70,7 +66,6 @@ class DashboardController extends Controller
         )
             ->count();
 
-
         /*
         |--------------------------------------------------------------------------
         | COMMANDES EN PRÉPARATION
@@ -83,7 +78,6 @@ class DashboardController extends Controller
         )
             ->count();
 
-
         /*
         |--------------------------------------------------------------------------
         | COMMANDES PRÊTES
@@ -95,7 +89,6 @@ class DashboardController extends Controller
             'ready'
         )
             ->count();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -116,7 +109,6 @@ class DashboardController extends Controller
             )
             ->count();
 
-
         /*
         |--------------------------------------------------------------------------
         | COMMANDES À TRAITER
@@ -133,7 +125,6 @@ class DashboardController extends Controller
             +
             $preparingOrders;
 
-
         /*
         |--------------------------------------------------------------------------
         | PRODUITS ACTIFS
@@ -145,7 +136,6 @@ class DashboardController extends Controller
             true
         )
             ->count();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -162,7 +152,6 @@ class DashboardController extends Controller
                 [1, 5]
             )
             ->count();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -186,7 +175,6 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-
         /*
         |--------------------------------------------------------------------------
         | RUPTURES
@@ -204,7 +192,6 @@ class DashboardController extends Controller
             )
             ->count();
 
-
         /*
         |--------------------------------------------------------------------------
         | DERNIÈRES COMMANDES
@@ -218,7 +205,6 @@ class DashboardController extends Controller
             ->latest()
             ->take(8)
             ->get();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -246,7 +232,6 @@ class DashboardController extends Controller
             ->take(6)
             ->get();
 
-
         /*
         |--------------------------------------------------------------------------
         | TOTAL COMMANDES
@@ -254,7 +239,6 @@ class DashboardController extends Controller
         */
 
         $totalOrders = Order::count();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -269,7 +253,6 @@ class DashboardController extends Controller
         )
             ->sum('total');
 
-
         /*
         |--------------------------------------------------------------------------
         | PANIER MOYEN
@@ -283,12 +266,10 @@ class DashboardController extends Controller
         )
             ->count();
 
-
         $averageOrderValue =
             $validOrdersCount > 0
                 ? $totalRevenue / $validOrdersCount
                 : 0;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -299,56 +280,39 @@ class DashboardController extends Controller
         return view(
             'admin.dashboard',
             [
-                'ordersToday' =>
-                    $ordersToday,
+                'ordersToday' => $ordersToday,
 
-                'revenueToday' =>
-                    $revenueToday,
+                'revenueToday' => $revenueToday,
 
-                'pendingOrders' =>
-                    $pendingOrders,
+                'pendingOrders' => $pendingOrders,
 
-                'acceptedOrders' =>
-                    $acceptedOrders,
+                'acceptedOrders' => $acceptedOrders,
 
-                'preparingOrders' =>
-                    $preparingOrders,
+                'preparingOrders' => $preparingOrders,
 
-                'readyOrders' =>
-                    $readyOrders,
+                'readyOrders' => $readyOrders,
 
-                'pickupsToday' =>
-                    $pickupsToday,
+                'pickupsToday' => $pickupsToday,
 
-                'ordersToProcess' =>
-                    $ordersToProcess,
+                'ordersToProcess' => $ordersToProcess,
 
-                'activeProducts' =>
-                    $activeProducts,
+                'activeProducts' => $activeProducts,
 
-                'lowStockCount' =>
-                    $lowStockCount,
+                'lowStockCount' => $lowStockCount,
 
-                'lowStockProducts' =>
-                    $lowStockProducts,
+                'lowStockProducts' => $lowStockProducts,
 
-                'outOfStockProducts' =>
-                    $outOfStockProducts,
+                'outOfStockProducts' => $outOfStockProducts,
 
-                'latestOrders' =>
-                    $latestOrders,
+                'latestOrders' => $latestOrders,
 
-                'urgentOrders' =>
-                    $urgentOrders,
+                'urgentOrders' => $urgentOrders,
 
-                'totalOrders' =>
-                    $totalOrders,
+                'totalOrders' => $totalOrders,
 
-                'totalRevenue' =>
-                    $totalRevenue,
+                'totalRevenue' => $totalRevenue,
 
-                'averageOrderValue' =>
-                    $averageOrderValue,
+                'averageOrderValue' => $averageOrderValue,
             ]
         );
     }
